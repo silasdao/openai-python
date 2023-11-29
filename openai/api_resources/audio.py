@@ -12,7 +12,7 @@ class Audio(APIResource):
     def _get_url(cls, action, deployment_id=None, api_type=None, api_version=None):
         if api_type in (util.ApiType.AZURE, util.ApiType.AZURE_AD):
             return f"/{cls.azure_api_prefix}/deployments/{deployment_id}/audio/{action}?api-version={api_version}"
-        return cls.class_url() + f"/{action}"
+        return f"{cls.class_url()}/{action}"
 
     @classmethod
     def _prepare_request(
@@ -34,12 +34,11 @@ class Audio(APIResource):
             api_version=api_version,
             organization=organization,
         )
-        files: List[Any] = []
         data = {
             "model": model,
             **params,
         }
-        files.append(("file", (filename, file, "application/octet-stream")))
+        files: List[Any] = [("file", (filename, file, "application/octet-stream"))]
         return requestor, files, data
 
     @classmethod
